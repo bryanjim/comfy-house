@@ -2,7 +2,7 @@
 
 const cartBtn = document.querySelector(".cart-btn");
 const closeCartBtn = document.querySelector(".close-cart");
-const clearCartBtn = document.querySelector(".cart-bcart");
+const clearCartBtn = document.querySelector(".clear-cart");
 const cartDOM = document.querySelector(".cart");
 const cartOverlay = document.querySelector(".cart-overlay");
 const cartItems = document.querySelector(".cart-items");
@@ -94,13 +94,13 @@ class UI {
   }
 
   setCartValues(cart) {
-    let cartTotal = 0;
+    let tempTotal = 0;
     let itemsTotal = 0;
     cart.map((item) => {
-      cartTotal += item.price * item.amount;
+      tempTotal += item.price * item.amount;
       itemsTotal += item.amount;
     });
-    cartTotal.innerText = parseFloat(cartTotal.toFixed(2));
+    cartTotal.innerText = parseFloat(tempTotal.toFixed(2));
     cartItems.innerText = itemsTotal;
   }
   addCartItem(item) {
@@ -197,6 +197,9 @@ class UI {
           this.setCartValues(cart);
           lowerAmount.previousElementSibling.innerText = tempItem.amount;
         } else {
+          cart = cart.filter((item) => item.id !== id);
+          this.setCartValues(cart);
+          Storage.saveCart(cart);
           cartContent.removeChild(lowerAmount.parentElement);
           this.removeItem(id);
         }
