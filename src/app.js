@@ -138,11 +138,18 @@ class UI {
   }
 
   clearCart() {
-    let cartItems = cart.map((item) => item.id);
-    cartItems.forEach((id) => this.removeItem(id));
+    cart = [];
+    this.setCartValues(cart);
+    Storage.saveCart(cart);
+    const buttons = [...document.querySelectorAll(".bag-btn")];
+    buttons.forEach((button) => {
+      button.disabled = false;
+      button.innerHTML = `<i class="fas fa-shopping-cart"></i>add to bag`;
+    });
     while (cartContent.children.length > 0) {
       cartContent.removeChild(cartContent.children[0]);
     }
+    this.hideCart();
   }
 
   removeItem(id) {
@@ -200,8 +207,14 @@ class UI {
           cart = cart.filter((item) => item.id !== id);
           this.setCartValues(cart);
           Storage.saveCart(cart);
-          cartContent.removeChild(lowerAmount.parentElement);
-          this.removeItem(id);
+          cartContent.removeChild(lowerAmount.parentElement.parentElement);
+          const buttons = [...document.querySelectorAll(".bag-btn")];
+          buttons.forEach((button) => {
+            if (parseInt(button.dataset.id) === id) {
+              button.disabled = false;
+              button.innerHTML = `<i class="fas fa-shopping-cart"></i>add to bag`;
+            }
+          });
         }
       }
     });
